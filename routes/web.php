@@ -8,4 +8,4 @@ Route::get('/about', fn() => view('about'))->name('about');
 Route::get('/services', fn() => view('services'))->name('services');
 Route::get('/contact', fn() => view('contact'))->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::get('/admin', [ContactController::class, 'admin'])->name('admin');
+// Old admin removed — Filament handles /admin now
