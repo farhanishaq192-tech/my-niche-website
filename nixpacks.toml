@@ -18,9 +18,15 @@ nixPkgs = [
   "php82Packages.composer"
 ]
 
+[phases.install]
+cmds = [
+  "mkdir -p /var/log/nginx && mkdir -p /var/cache/nginx",
+  "composer install --ignore-platform-reqs --no-dev --optimize-autoloader"
+]
+
 [phases.build]
 cmds = [
-  "composer install --no-dev --optimize-autoloader"
+  "echo 'Skipping npm build - no frontend assets'"
 ]
 
 [start]
