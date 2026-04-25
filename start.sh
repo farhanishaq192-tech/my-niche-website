@@ -23,5 +23,11 @@ php artisan route:cache || echo "Route cache warning"
 echo "==> Storage link..."
 php artisan storage:link || true
 
+echo "==> Publishing Filament assets..."
+php artisan filament:assets || echo "Asset publish warning"
+
+echo "==> Caching views..."
+php artisan view:cache || echo "View cache warning"
+
 echo "==> Starting server on port ${PORT:-8000}..."
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
