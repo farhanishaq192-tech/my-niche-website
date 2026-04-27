@@ -3,31 +3,32 @@
 echo "==> PHP version..."
 php --version
 
-echo "==> Checking DB connection..."
-php artisan migrate:status 2>&1 || echo "DB check done"
-
 echo "==> Running migrations..."
-php artisan migrate --force || echo "Migration warning (continuing)"
+php artisan migrate --force
 
-echo "==> Seeding admin user and default data..."
-php artisan db:seed --class=AdminSeeder --no-interaction || echo "Seeder warning (continuing)"
+echo "==> Creating/updating admin user..."
+php artisan tinker --no-interaction <<'TINKER'
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+User::updateOrCreate(
+    ['email' => 'admin@neuralcraft.pk'],
+    ['name' => 'NeuralCraft Admin', 'password' => Hash::make('admin1234')]
+);
+echo "Admin user ready.\n";
+TINKER
 
-echo "==> Clearing and caching config..."
+echo "==> Seeding packages and settings..."
+php artisan db:seed --class=AdminSeeder --no-interaction || echo "Seeder note: some records may already exist"
+
+echo "==> Config cache (safe)..."
 php artisan config:clear
-php artisan config:cache || echo "Config cache warning"
+php artisan config:cache
 
-echo "==> Caching routes..."
-php artisan route:clear
-php artisan route:cache || echo "Route cache warning"
+echo "==> Publishing Filament assets..."
+php artisan filament:assets
 
 echo "==> Storage link..."
 php artisan storage:link || true
-
-echo "==> Publishing Filament assets..."
-php artisan filament:assets || echo "Asset publish warning"
-
-echo "==> Caching views..."
-php artisan view:cache || echo "View cache warning"
 
 echo "==> Starting server on port ${PORT:-8000}..."
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
