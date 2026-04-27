@@ -13,7 +13,8 @@ echo "==> Creating/updating admin user..."
 php artisan admin:create
 
 echo "==> Seeding packages and settings..."
-php artisan db:seed --class=AdminSeeder --no-interaction || echo "Seeder note: continuing"
+php artisan db:seed --class=AdminSeeder --force
+echo "Seeder done."
 
 echo "==> Caching config (safe)..."
 php artisan config:cache
