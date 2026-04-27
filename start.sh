@@ -3,25 +3,19 @@
 echo "==> PHP version..."
 php --version
 
+echo "==> Clearing all caches first..."
+php artisan optimize:clear || true
+
 echo "==> Running migrations..."
 php artisan migrate --force
 
 echo "==> Creating/updating admin user..."
-php artisan tinker --no-interaction <<'TINKER'
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-User::updateOrCreate(
-    ['email' => 'admin@neuralcraft.pk'],
-    ['name' => 'NeuralCraft Admin', 'password' => Hash::make('admin1234')]
-);
-echo "Admin user ready.\n";
-TINKER
+php artisan admin:create
 
 echo "==> Seeding packages and settings..."
-php artisan db:seed --class=AdminSeeder --no-interaction || echo "Seeder note: some records may already exist"
+php artisan db:seed --class=AdminSeeder --no-interaction || echo "Seeder note: continuing"
 
-echo "==> Config cache (safe)..."
-php artisan config:clear
+echo "==> Caching config (safe)..."
 php artisan config:cache
 
 echo "==> Publishing Filament assets..."
